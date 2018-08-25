@@ -16,7 +16,7 @@
   "scripts": {
     "prestart": "npm run -s build",
     "start": "node --optimize_for_size --max_old_space_size=920 --gc_interval=100 dist/app.js",
-    "dev": "npm run build && nodemon src/app.js --exec \"node -r dotenv/config -r babel-register\"",
+    "dev": "npm run build && nodemon src/app.js --exec \"node $NODE_DEBUG_OPTION -r dotenv/config -r babel-register\"",
     "clean": "rimraf dist",
     "build": "npm run clean && mkdir -p dist && babel src -s -D -d dist",
     "test": "jest --watch",
@@ -36,6 +36,7 @@
     "eslint"
   ],
   "dependencies": {
+    "@linniaprotocol/linnia-js": "^0.1.4",
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -43,6 +44,7 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "helmet": "^3.12.1",
+    "ipfs-api": "^24.0.1",
     "morgan": "^1.9.0",
     "pug": "^2.0.0-beta11",
     "rimraf": "^2.6.2",

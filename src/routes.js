@@ -1,12 +1,27 @@
 import { Router } from 'express';
+import linnia from './linnia';
+import logger from './logger';
 
 const routes = Router();
 
 /**
  * GET home page
  */
-routes.get('/', (req, res) => {
-  res.render('index', { title: 'Heroku Express Babel' });
+routes.get('/records/:hash', (req, res) => {
+    //'0xe2c2b2de424f2bd720b11503b3ec547d7fb672152085c3bd8ff6c6bbe300e980'
+    linnia.getRecord(req.params.hash)
+        .then((record) => {
+          console.log(record.contracts);
+          // res.send(JSON.stringify(record));
+          res.send('hello');
+
+
+        //record.decryptData(privKey, uriResolver)
+        })
+        .catch((error) => {
+            logger.error(error.message);
+            res.send(404);
+        });
 });
 
 /**
