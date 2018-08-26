@@ -1,51 +1,27 @@
 import { Router } from 'express';
-import linnia from './linnia';
+import { linnia, ipfs } from './linnia';
+const Linnia = require('@linniaprotocol/linnia-js');
 import logger from './logger';
 
 const routes = Router();
 
-/**
- * GET home page
- */
-routes.get('/records/:hash', (req, res) => {
-    //'0xe2c2b2de424f2bd720b11503b3ec547d7fb672152085c3bd8ff6c6bbe300e980'
-    linnia.getRecord(req.params.hash)
-        .then((record) => {
-          console.log(record.contracts);
-          // res.send(JSON.stringify(record));
-          res.send('hello');
+routes.get('/records/:hash', async(req, res) => {
+  const record = await linnia.getRecord(req.params.hash);
 
-
-        //record.decryptData(privKey, uriResolver)
-        })
-        .catch((error) => {
-            logger.error(error.message);
-            res.send(404);
-        });
+  res.send({
+      hash: record.dataHash,
+      owner: record.owner,
+      dataUri: record.dataUri
+  });
 });
 
-/**
- * GET /list
- *
- * This is a sample route demonstrating
- * a simple approach to error handling and testing
- * the global error handler. You most certainly want to
- * create different/better error handlers depending on
- * your use case.
- */
-routes.get('/list', (req, res, next) => {
-  const { title } = req.query;
-
-  if (title == null || title === '') {
-    // You probably want to set the response HTTP status to 400 Bad Request
-    // or 422 Unprocessable Entity instead of the default 500 of
-    // the global error handler (e.g check out https://github.com/kbariotis/throw.js).
-    // This is just for demo purposes.
-    next(new Error('The "title" parameter is required'));
-    return;
-  }
-
-  res.render('index', { title });
+routes.get('/records/:hash/decrypt', async(req, res) => {
+    const record = await linnia.getRecord(req.params.hash);
+    const buffer = await ipfs.cat(record.dataUri);
+    const encrypted = buffer.toString();
+    const decrypted = await Linnia.util.decrypt(process.env.LINNIA_PRIVATE_KEY, encrypted);
+    const plaintext = decrypted.toString();
+    res.send(plaintext);
 });
 
 export default routes;

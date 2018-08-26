@@ -30,4 +30,4 @@ const linnia = new Linnia(web3, ipfs, { hubAddress });
 // get the deployed contracts
 //const { _, users, records, permissions } = await linnia.getContractInstances()
 
-export default linnia;
+export { linnia, ipfs };
