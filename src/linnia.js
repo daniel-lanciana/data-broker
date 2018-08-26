@@ -7,7 +7,7 @@ import logger from './logger';
 // const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
 
 // Ropsten (testnet)
-let web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/6d6c8269aa7d4438bc50f06cf0ca4be8'));
+let web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/' + process.env.ROPSTEN_API_KEY));
 
 const ipfs = new IPFS({
     host: 'ipfs.infura.io',
@@ -15,19 +15,11 @@ const ipfs = new IPFS({
     protocol: 'https'
 });
 
+// Not sure why, but hubAddress cannot be renamed without causing an error?!
 const hubAddress = '0x177bf15e7e703f4980b7ef75a58dc4198f0f1172';
 const linnia = new Linnia(web3, ipfs, { hubAddress });
 
-// linnia.getContractInstances().then((instances) => {
-//     let users = instances.users;
-//     let records = instances.records;
-//     let permissions = instances.permissions;
-// });
-
-// get record (endpoint)
-// decrypt record (endpoint)
-
 // get the deployed contracts
-//const { _, users, records, permissions } = await linnia.getContractInstances()
+//const { _, users, records, permissions } = await linnia.getContractInstances();
 
 export { linnia, ipfs };

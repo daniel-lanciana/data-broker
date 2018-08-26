@@ -5,9 +5,12 @@ import logger from './logger';
 
 const routes = Router();
 
+// https://github.com/ConsenSys/linnia-js
+
 routes.get('/records/:hash', async(req, res) => {
   const record = await linnia.getRecord(req.params.hash);
 
+  // Some record information (more available)
   res.send({
       hash: record.dataHash,
       owner: record.owner,
@@ -16,12 +19,14 @@ routes.get('/records/:hash', async(req, res) => {
 });
 
 routes.get('/records/:hash/decrypt', async(req, res) => {
+    // Get the Linnia record from the record hash
     const record = await linnia.getRecord(req.params.hash);
-    const buffer = await ipfs.cat(record.dataUri);
-    const encrypted = buffer.toString();
-    const decrypted = await Linnia.util.decrypt(process.env.LINNIA_PRIVATE_KEY, encrypted);
-    const plaintext = decrypted.toString();
-    res.send(plaintext);
+    // Get the encrypted data as a hex string
+    const encrypted = (await ipfs.cat(record.dataUri)).toString();
+    // Use the encryption private key to decrypt and convert to string
+    const decrypted = (await Linnia.util.decrypt(process.env.LINNIA_PRIVATE_KEY, encrypted)).toString();
+
+    res.send(decrypted);
 });
 
 export default routes;
